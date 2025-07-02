@@ -1,0 +1,8 @@
+echo "opencv-python
+numpy
+pandas
+streamlit
+scikit-learn
+tensorflow
+keras
+pywin32 ; platform_system == \"Windows\"" > requirements.txt
