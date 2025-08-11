@@ -40,7 +40,7 @@ A real-time facial recognition attendance system using OpenCV, Keras (CNN), and 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/face-attendance-system.git
+git clone https://github.com/sakshimittal5631/AttendEase.git
 cd face-attendance-system
 ```
 
