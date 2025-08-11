@@ -5,4 +5,5 @@ streamlit
 scikit-learn
 tensorflow
 keras
+cv2
 pywin32 ; platform_system == \"Windows\"" > requirements.txt
