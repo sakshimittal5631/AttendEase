@@ -10,7 +10,8 @@ with open('data/names.pkl', 'rb') as f:
     labels = pickle.load(f)
 
 faces = np.array(faces).reshape(-1, 50, 50, 3) / 255.0
-labels = np.array(labels)
+
+labels = np.array([f"{roll}_{name}" for roll, name in labels])
 
 le = LabelEncoder()
 labels_num = le.fit_transform(labels)
@@ -34,4 +35,5 @@ model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=
 model.summary()
 
 model.fit(faces, labels_num, epochs=20, batch_size=32, validation_split=0.2)
+
 model.save('face_cnn_model.h5')

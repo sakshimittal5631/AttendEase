@@ -18,19 +18,15 @@ model = load_model('face_cnn_model.h5')
 with open('data/label_encoder.pkl', 'rb') as f:
     le = pickle.load(f)
 
-
 video = cv2.VideoCapture(0)
 facedetect = cv2.CascadeClassifier('data/haarcascade_frontalface_default.xml')
-imgBackground = cv2.imread("background.png")
+imgBackground = cv2.imread("background2.png")
 
-
-COL_NAMES = ['NAME', 'TIME']
-
+COL_NAMES = ['ROLL NO', 'NAME', 'TIME']
 
 logged_names = set()
 today_date = datetime.now().strftime("%d-%m-%Y")
 filename = f"Attendance/Attendance_{today_date}.csv"
-
 
 if not os.path.exists("Attendance"):
     os.makedirs("Attendance")
@@ -53,7 +49,9 @@ while True:
 
         pred = model.predict(resized_img)
         predicted_class = np.argmax(pred)
-        name = le.inverse_transform([predicted_class])[0]
+        label = le.inverse_transform([predicted_class])[0]  # "101_John"
+
+        roll_no, person_name = label.split("_", 1)
 
         ts = time.time()
         timestamp = datetime.fromtimestamp(ts).strftime("%H:%M-%S")
@@ -61,14 +59,15 @@ while True:
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 1)
         cv2.rectangle(frame, (x, y), (x+w, y+h), (50, 50, 255), 2)
         cv2.rectangle(frame, (x, y-40), (x+w, y), (50, 50, 255), -1)
-        cv2.putText(frame, str(name), (x, y-10), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 1)
+        cv2.putText(frame, f"{roll_no} - {person_name}", (x, y-10),
+                    cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 1)
 
-        if name not in logged_names:
-            speak(f"Welcome {name}, your attendance has been marked.")
+        if roll_no not in logged_names:
+            speak(f"Welcome {person_name}, your attendance has been marked.")
             with open(filename, "+a", newline='') as csvfile:
                 writer = csv.writer(csvfile)
-                writer.writerow([name, timestamp])
-            logged_names.add(name)
+                writer.writerow([roll_no, person_name, timestamp])
+            logged_names.add(roll_no)
             time.sleep(2)
 
     if imgBackground is not None:
